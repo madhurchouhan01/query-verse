@@ -1,0 +1,94 @@
+main_task:
+  description: >
+    Classify user input : "{query}" with one of three precise tags: "*DB*", "*QA*", or "*Invalid Query*".
+    The classification must strictly follow the tagging rules with no interpretation or creativity.
+
+  expected_output: >
+    Return only one of these three tags exactly:
+      1. "*DB*" - For SQL-related queries (e.g., insert, delete, update, view).
+      2. "*QA*" - For non-technical/general/natural questions/greetings.
+      3. "*Invalid Query*" - For any input that is irrelevant, nonsense, or doesn't fit DB or QA.
+      
+    Do not include explanations or anything other than the tag. Do not assume context.
+
+    input_examples:
+    - "Hi" => *QA*
+    - "Delete employee with ID 10001" => *DB*
+    - "sdjkh3r832he98e" => *Invalid Query*
+    - "Insert data into employee table" => *DB*
+    - "Hello, how are you?" => *QA*
+    - "Who won the world cup in 2018?" => *QA*
+    - "Create new employee record" => *DB*
+    - "Capital of France" => *Invalid Query*
+
+
+    tagging_logic:
+      - Use **rule-based tagging only** — never improvise
+      - Prioritize **intent clarity**
+      - If unclear, classify as "*Invalid Query*"
+
+    output_constraints:
+      - Must match exactly: "*DB*", "*QA*", or "*Invalid Query*"
+      - Any deviation will be treated as a system failure
+
+
+general_qa_task:
+  description: >
+    You are given a user's natural language question : "{query}", along with optional context: "{history}" retrieved from documents or tools.
+    Your responsibilities are:
+    1. Understand the intent behind the question.
+    2. Use context and memory (if available) to find relevant facts.
+    3. Compose a concise, well-structured answer in plain language.
+    4. If necessary, cite sources or clarify ambiguities in the question.
+  expected_output: >
+    A natural, contextually grounded answer written in clear Markdown. 
+    Avoid technical language unless appropriate for the user. 
+    Focus on being informative, helpful, and easy to understand.
+
+generate_sql_task:
+  description: >
+    You will receive a natural language query about the employee database. 
+    Based on the query, generate a valid MySQL statement that retrieves or modifies the relevant data. 
+    Use only the following tables and columns:
+
+    - current_dept_emp(emp_no, dept_no, from_date, to_date)
+    - department(dept_no, dept_name)
+    - dept_emp(emp_no (auto-increment), dept_no, from_date, to_date)
+    - dept_emp_latest_date(emp_no, from_date, to_date)
+    - dept_manager(emp_no, dept_no, from_date, to_date)
+    - employee(emp_no, birth_date, first_name, last_name, gender, hire_date) 
+    - salary(emp_no, amount, from_date, to_date)
+    - title(emp_no, title, from_date, to_date)
+    - v_full_department(dept_no, dept_name, manager)
+    - v_full_employee(emp_no, first_name, last_name, birth_date, gender, hire_date, department)
+
+    ❗ Only use these exact table and column names.
+
+    Natural Language Query: "{query}"
+    Chat History : "{history}"
+    
+  expected_output: >
+    A syntactically correct MySQL query that answers the user's request based strictly on the schema provided.
+    Do not explain the query. Only return the raw SQL.
+    A syntactically correct and efficient MySQL query that matches the user's intent.
+    The query must be written using proper SQL conventions and formatting. 
+    Ensure the output contains only the SQL query, and nothing else (no explanations or comments).
+    Output must be pure SQL query without any sql markdowns or backticks (```)
+
+generate_human_language_task:
+  description: >
+    You will receive a valid MySQL query. Your job is to:
+    1. Use the provided tool to execute the query against the database.
+    2. Analyze the result returned.
+    3. Generate a natural language summary of the data, highlighting key facts or findings.
+    
+    For example:
+    Input Query: `SELECT COUNT(*) FROM employees WHERE department = 'Sales';`
+    Output: "There are 215 employees currently working in the Sales department."
+
+    SQL Query: "{sql_query}"
+
+  expected_output: >
+    A clear and concise natural language explanation of the SQL query result with Markdown.
+    Avoid technical jargon and format it as if you're explaining it to a non-technical stakeholder.
+
