@@ -356,7 +356,7 @@ pylint @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pylint_16
 pylint-venv @ file:///C:/b/abs_3f6p_17zia/croot/pylint-venv_1709837680309/work
 pyls-spyder==0.4.0
 PyMuPDF==1.25.5
-PyMySQL==1.1.1
+pymysql==1.1.1
 PyNaCl @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pynacl_1699563077212/work
 pyodbc @ file:///C:/b/abs_cbgr1yn8qs/croot/pyodbc_1725560257385/work
 pyOpenSSL @ file:///C:/b/abs_61vvbgrloc/croot/pyopenssl_1723651600236/work
