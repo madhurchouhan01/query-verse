@@ -1,11 +1,17 @@
 [project]
 name = "query_gen"
 version = "0.1.0"
-description = "query_gen using crewAI"
+description = "Natural Language to SQL Generator using CrewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.13"
+
 dependencies = [
+    "streamlit",
     "crewai[tools]>=0.121.0,<1.0.0",
+    "chromadb>=0.5.23",
+    "sqlalchemy",
+    "pydantic",
+    # add more if needed
 ]
 
 [project.scripts]
