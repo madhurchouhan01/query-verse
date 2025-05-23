@@ -366,6 +366,7 @@ PyPDF2==3.0.1
 pypdfium2==4.30.1
 PyPika==0.48.9
 pyproject_hooks==1.2.0
+pysqlite3-binary
 PyQt5==5.15.10
 PyQt5-sip @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pyqt-split_1699478669290/work/pyqt_sip
 PyQtWebEngine==5.15.6
