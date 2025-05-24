@@ -1,12 +1,12 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 from pydantic import BaseModel
 
 from crewai.flow import Flow, listen, start, router
 
-from query_gen.crews.poem_crew.poem_crew import QueryCrew, QueryGenCrew, IDUGenCrew, GeneralQA, MainAgent
+from crews.poem_crew.poem_crew import QueryCrew, QueryGenCrew, IDUGenCrew, GeneralQA, MainAgent
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -139,7 +139,7 @@ if user_input := st.chat_input("Type your query here..."):
     query_flow = QueryFlow()
     query_flow.state.query = st.session_state.query_state.query
     query_flow.state.history = st.session_state.query_state.history
-    with st.spinner("Processing Your Input...", show_time=True):
+    with st.spinner("Processing Your Input..."):
         # Kick off the flow; note that kickoff() only accepts the inputs dictionary.
         response = query_flow.kickoff(inputs={"query": user_input})
     

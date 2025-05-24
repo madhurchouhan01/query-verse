@@ -3,9 +3,9 @@ from typing import Type
 from crewai.tools import BaseTool
 from crewai.tools import tool
 import pymysql
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 @tool("Query Executer")
 def query_executer(sql_query: str) -> str:
     """Executes the given SQL query and returns the result as a plain string."""
