@@ -1,36 +1,107 @@
 main_task:
   description: >
-    Classify user input : "{query}" with one of three precise tags: "*DB*", "*QA*", or "*Invalid Query*".
+    Classify user input: "{query}" with one of three precise tags: "*DB*", "*QA*", or "*Invalid Query*".
     The classification must strictly follow the tagging rules with no interpretation or creativity.
 
   expected_output: >
     Return only one of these three tags exactly:
-      1. "*DB*" - For SQL or Database-related queries (e.g., insert, delete, update, view).
-      2. "*QA*" - For non-technical/general/natural questions/greetings.
-      3. "*Invalid Query*" - For any input that is irrelevant, nonsense, or doesn't fit DB or QA.
+      1. "*DB*" - For ALL database-related queries including SQL operations, database exploration, and data management.
+      2. "*QA*" - For general questions, conversations, greetings, see off (bye) and knowledge-based queries.
+      3. "*Invalid Query*" - For nonsense input, random characters, or completely irrelevant content.
       
     Do not include explanations or anything other than the tag. Do not assume context.
 
     input_examples:
-    - "Hi" => *QA*
+    # Database Queries (*DB*)
+    - "Show me all tables in the database" => *DB*
+    - "List all employees" => *DB*
+    - "Select * from users" => *DB*
     - "Delete employee with ID 10001" => *DB*
-    - "sdjkh3r832he98e" => *Invalid Query*
     - "Insert data into employee table" => *DB*
+    - "Update user information" => *DB*
+    - "Create new employee record" => *DB*
+    - "What tables exist in this database?" => *DB*
+    - "Show database schema" => *DB*
+    - "Get all records from products table" => *DB*
+    - "Find users with name John" => *DB*
+    - "Display customer data" => *DB*
+    - "Remove duplicate entries" => *DB*
+    - "Count total employees" => *DB*
+    - "Show table structure" => *DB*
+    - "Export user data" => *DB*
+    - "Backup database" => *DB*
+    
+    # General Q&A (*QA*)
+    - "Hi" => *QA*
     - "Hello, how are you?" => *QA*
     - "Who won the world cup in 2018?" => *QA*
-    - "Create new employee record" => *DB*
-    - "Capital of France" => *Invalid Query*
+    - "Capital of France" => *QA*
+    - "What is machine learning?" => *QA*
+    - "How does photosynthesis work?" => *QA*
+    - "Tell me a joke" => *QA*
+    - "What's the weather like?" => *QA*
+    - "Explain quantum physics" => *QA*
+    - "Good morning" => *QA*
+    
+    # Invalid Queries (*Invalid Query*)
+    - "sdjkh3r832he98e" => *Invalid Query*
+    - "xcv,m.zxc" => *Invalid Query*
+    - "123@#$%^&*()" => *Invalid Query*
+    - "aaaaaaaaaaaa" => *Invalid Query*
+    - "random gibberish text" => *Invalid Query*
 
+    database_keywords_to_detect:
+      # SQL Commands
+      - select, insert, update, delete, create, drop, alter, truncate
+      # Database Objects
+      - table, database, schema, index, view, procedure, function
+      # Data Operations
+      - show, display, list, get, find, retrieve, fetch, query
+      - count, sum, average, group, order, sort
+      # Database Management
+      - backup, restore, export, import, migrate
+      # Data Modification
+      - add, remove, modify, change, edit
+      
+    natural_language_database_patterns:
+      - "show me all/the [table/data/records/entries]"
+      - "list all/the [users/employees/customers/products]"
+      - "get/find/retrieve [data/information/records] from [table]"
+      - "display/show [table/database/schema] [structure/contents]"
+      - "what tables/data [exist/are available]"
+      - "how many [records/entries/rows] in [table]"
 
     tagging_logic:
-      - Use **rule-based tagging only** — never improvise
-      - Prioritize **intent clarity**
-      - If unclear, classify as "*Invalid Query*"
+      1. **Database Query Detection (*DB*)**:
+         - Contains SQL keywords (SELECT, INSERT, UPDATE, DELETE, etc.)
+         - Mentions database objects (table, database, schema, etc.)
+         - Uses data retrieval language (show, list, get, find, display)
+         - Asks about database structure or contents
+         - Requests data operations or modifications
+      
+      2. **General Q&A Detection (*QA*)**:
+         - Greetings and conversational phrases
+         - General knowledge questions
+         - Non-technical questions about world facts, science, etc.
+         - Requests for explanations of concepts
+         - Casual conversation
+      
+      3. **Invalid Query Detection (*Invalid Query*)**:
+         - Random characters or symbols
+         - Nonsensical text or gibberish
+         - Extremely short meaningless input
+         - Completely unrelated or spam content
+
+    priority_rules:
+      - If input contains database-related keywords or patterns → *DB*
+      - If input is a clear general question or greeting → *QA*
+      - If input is gibberish or meaningless → *Invalid Query*
+      - When in doubt between DB and QA, prefer *DB* if any database context exists
 
     output_constraints:
       - Must match exactly: "*DB*", "*QA*", or "*Invalid Query*"
-      - Any deviation will be treated as a system failure
-
+      - No explanations, just the tag
+      - Case-sensitive tag format required
 
 general_qa_task:
   description: >
@@ -41,6 +112,7 @@ general_qa_task:
     3. Compose a concise, well-structured answer in plain language.
     4. If necessary, cite sources or clarify ambiguities in the question.
   expected_output: >
+    Your response should contain a simple markdown structure with appropriate emojis.
     A natural, contextually grounded answer written in clear Markdown. 
     Avoid technical language unless appropriate for the user. 
     Focus on being informative, helpful, and easy to understand.
@@ -49,20 +121,21 @@ generate_sql_task:
   description: >
     You will receive a natural language query about the employee database. 
     Based on the query, generate a valid MySQL statement that retrieves or modifies the relevant data. 
-    Use only the following tables and columns:
+    Strict Rules:
+      Use only the following tables and columns:
 
-    - current_dept_emp(emp_no, dept_no, from_date, to_date)
-    - department(dept_no, dept_name)
-    - dept_emp(emp_no (auto-increment), dept_no, from_date, to_date)
-    - dept_emp_latest_date(emp_no, from_date, to_date)
-    - dept_manager(emp_no, dept_no, from_date, to_date)
-    - employee(emp_no, birth_date, first_name, last_name, gender, hire_date) 
-    - salary(emp_no, amount, from_date, to_date)
-    - title(emp_no, title, from_date, to_date)
-    - v_full_department(dept_no, dept_name, manager)
-    - v_full_employee(emp_no, first_name, last_name, birth_date, gender, hire_date, department)
+      - current_dept_emp(emp_no, dept_no, from_date, to_date)
+      - department(dept_no, dept_name)
+      - dept_emp(emp_no (auto-increment), dept_no, from_date, to_date)
+      - dept_emp_latest_date(emp_no, from_date, to_date)
+      - dept_manager(emp_no, dept_no, from_date, to_date)
+      - employee(emp_no, birth_date, first_name, last_name, gender, hire_date) 
+      - salary(emp_no, amount, from_date, to_date)
+      - title(emp_no, title, from_date, to_date)
+      - v_full_department(dept_no, dept_name, manager)
+      - v_full_employee(emp_no, first_name, last_name, birth_date, gender, hire_date, department)
 
-    ❗ Only use these exact table and column names.
+      ❗ Only use these exact table and column names.
 
     Natural Language Query: "{query}"
     Chat History : "{history}"
@@ -77,18 +150,164 @@ generate_sql_task:
 
 generate_human_language_task:
   description: >
-    You will receive a valid MySQL query : {sql_query}. Your job is to:
+    You will receive a valid MySQL query: {sql_query}. Your job is to:
     1. Use the provided tool to execute the query against the database.
-    2. Analyze the result returned.
-    3. Generate a natural language summary of the data, highlighting key facts or findings.
+    2. Analyze the result returned from the database.
+    3. Generate a comprehensive, well-formatted markdown response that includes both the executed query and human-readable insights.
     
-    For example:
-    Input Query: `SELECT COUNT(*) FROM employees WHERE department = 'Sales';`
-    Output: "There are 215 employees currently working in the Sales department."
-
-    SQL Query: "{sql_query}"
+    Always start your response by showing the executed SQL query, then provide natural language analysis of the results.
 
   expected_output: >
-    A clear and concise natural language explanation of the SQL query result with Markdown.
-    Avoid technical jargon and format it as if you're explaining it to a non-technical stakeholder.
+      Generate a well-structured markdown response following this exact format:
+      
+      ## 🔍 **Query Executed**
+      ```sql
+      [Show the actual SQL query that was executed]
+      ```
+      
+      ## 📊 **Results Summary**
+      [Provide a clear, non-technical explanation of what the query found]
+      
+      ## 🔢 **Key Findings**
+      [Use bullet points or numbered lists to highlight important insights]
+      
+      ## 📈 **Data Insights** *(if applicable)*
+      [Include tables, charts description, or additional analysis when relevant]
+      
+      **Formatting Guidelines:**
+      - Use proper markdown headers (##, ###)
+      - Include emojis for visual appeal (📊, 🔍, 📈, 💡, ⚠️, ✅, 📋)
+      - Format numbers with proper separators (1,234 instead of 1234)
+      - Use **bold** for important metrics
+      - Use `code formatting` for column names, table names, or values
+      - Create tables when showing multiple records
+      - Use bullet points for lists
+      - Include warning icons ⚠️ for empty results or issues
+      - Use success icons ✅ for completed operations
+      
+      **Content Guidelines:**
+      - Explain results as if talking to a business stakeholder
+      - Avoid technical SQL jargon
+      - Highlight business-relevant insights
+      - Include context about what the numbers mean
+      - Mention data trends or patterns when visible
+      - Add recommendations or next steps when appropriate
 
+      response_examples:
+      
+      example_1:
+        input_query: "SELECT COUNT(*) FROM employees WHERE department = 'Sales';"
+        expected_response: |
+          ## 🔍 **Query Executed**
+          ```sql
+          SELECT COUNT(*) FROM employees WHERE department = 'Sales';
+          ```
+          
+          ## 📊 **Results Summary**
+          The database contains **215 employees** currently working in the Sales department.
+          
+          ## 🔢 **Key Findings**
+          - Sales team has **215 active employees**
+          - This represents the current headcount for the Sales department
+          - Query executed successfully ✅
+
+      example_2:
+        input_query: "SELECT name, salary FROM employees WHERE salary > 80000 ORDER BY salary DESC LIMIT 5;"
+        expected_response: |
+          ## 🔍 **Query Executed**
+          ```sql
+          SELECT name, salary FROM employees WHERE salary > 80000 ORDER BY salary DESC LIMIT 5;
+          ```
+          
+          ## 📊 **Results Summary**
+          Found the **top 5 highest-paid employees** earning more than $80,000 annually.
+          
+          ## 🔢 **Key Findings**
+          | Employee Name | Annual Salary |
+          |---------------|---------------|
+          | John Smith    | $125,000      |
+          | Sarah Johnson | $118,500      |
+          | Mike Wilson   | $112,000      |
+          | Lisa Brown    | $95,750       |
+          | David Lee     | $87,200       |
+          
+          ## 📈 **Data Insights**
+          - Salary range: **$87,200 - $125,000**
+          - Average salary among top earners: **$107,690**
+          - All employees shown exceed the $80,000 threshold ✅
+
+      example_3:
+        input_query: "INSERT INTO products (name, price, category) VALUES ('Laptop Pro', 1299.99, 'Electronics');"
+        expected_response: |
+          ## 🔍 **Query Executed**
+          ```sql
+          INSERT INTO products (name, price, category) VALUES ('Laptop Pro', 1299.99, 'Electronics');
+          ```
+          
+          ## 📊 **Results Summary**
+          Successfully added a new product **"Laptop Pro"** to the database.
+          
+          ## 🔢 **Key Findings**
+          - ✅ **Product Name:** Laptop Pro
+          - ✅ **Price:** $1,299.99
+          - ✅ **Category:** Electronics
+          - ✅ **Status:** Successfully inserted into `products` table
+          
+          ## 💡 **Next Steps**
+          The new product is now available in the system and can be:
+          - Viewed in product listings
+          - Included in sales reports
+          - Available for order processing
+
+      example_4:
+        input_query: "SELECT * FROM orders WHERE order_date = '2024-13-45';"
+        expected_response: |
+          ## 🔍 **Query Executed**
+          ```sql
+          SELECT * FROM orders WHERE order_date = '2024-13-45';
+          ```
+          
+          ## ⚠️ **Results Summary**
+          **No results found** - The query returned empty results.
+          
+          ## 🔢 **Key Findings**
+          - ⚠️ **Invalid date format detected:** `2024-13-45`
+          - ⚠️ **Issue:** Month "13" and day "45" are invalid
+          - ⚠️ **Result:** Zero records returned
+          
+          ## 💡 **Recommendation**
+          Please check the date format. Valid format should be `YYYY-MM-DD` where:
+          - Month should be 01-12
+          - Day should be 01-31 (depending on month)
+          - Example: `2024-12-25` for December 25, 2024
+
+      formatting_rules:
+      headers:
+        - Always use ## for main sections
+        - Use ### for subsections when needed
+        - Include relevant emojis in headers
+      
+      code_blocks:
+        - Always show SQL query in ```sql code block
+        - Use `backticks` for column names, table names, and values
+      
+      numbers:
+        - Format large numbers with commas (1,234,567)
+        - Use currency symbols for money ($1,299.99)
+        - Use percentage symbols when applicable (15.5%)
+      
+      tables:
+        - Use markdown tables for multiple records
+        - Keep table headers clear and business-friendly
+        - Align currency and numbers to the right
+      
+      emphasis:
+        - Use **bold** for important metrics and findings
+        - Use emojis strategically for visual appeal
+        - Use ✅ for success, ⚠️ for warnings, 📊 for data
+      
+      business_context:
+        - Always explain what the numbers mean for business
+        - Provide context about data trends
+        - Include actionable insights when possible
+        - Avoid technical database terminology
