@@ -5,7 +5,7 @@ main_task:
 
   expected_output: >
     Return only one of these three tags exactly:
-      1. "*DB*" - For SQL-related queries (e.g., insert, delete, update, view).
+      1. "*DB*" - For SQL or Database-related queries (e.g., insert, delete, update, view).
       2. "*QA*" - For non-technical/general/natural questions/greetings.
       3. "*Invalid Query*" - For any input that is irrelevant, nonsense, or doesn't fit DB or QA.
       
@@ -77,7 +77,7 @@ generate_sql_task:
 
 generate_human_language_task:
   description: >
-    You will receive a valid MySQL query. Your job is to:
+    You will receive a valid MySQL query : {sql_query}. Your job is to:
     1. Use the provided tool to execute the query against the database.
     2. Analyze the result returned.
     3. Generate a natural language summary of the data, highlighting key facts or findings.

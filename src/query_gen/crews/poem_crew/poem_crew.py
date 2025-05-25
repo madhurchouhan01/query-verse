@@ -86,6 +86,7 @@ class QueryGenCrew:
         return Agent(
             config=self.agents_config["generate_human_language"],
             tools=[query_executer],
+            verbose=True,
         )
     @task
     def query_executer_task(self) -> Task:

@@ -11,11 +11,13 @@ def query_executer(sql_query: str) -> str:
     """Executes the given SQL query and returns the result as a plain string."""
     
     conn = pymysql.connect(
-        host="localhost",
+        # host="mysql.railway.internal",
+        host="yamanote.proxy.rlwy.net",
         user="root",
-        password="1234",
-        database="employee",
-        cursorclass=pymysql.cursors.Cursor  # optional
+        password="KTNumwwPKBsVBqLAcaqoNdMgBzXpLnnG",
+        database="railway",
+        port=26984,
+        cursorclass=pymysql.cursors.Cursor  
     )
     cursor = conn.cursor()
     try:
@@ -34,10 +36,13 @@ def idu_query_executer(sql_query: str) -> str:
     """Executes the given Insertion, Deletion, or Updation SQL query and returns the result as a plain string."""
 
     conn = pymysql.connect(
-        host="localhost",
+        # host="mysql.railway.internal",
+        host="yamanote.proxy.rlwy.net",
         user="root",
-        password="1234",
-        database="employee"
+        password="KTNumwwPKBsVBqLAcaqoNdMgBzXpLnnG",
+        database="railway",
+        port=26984,
+        cursorclass=pymysql.cursors.Cursor  
     )
     cursor = conn.cursor()
     
