@@ -1,11 +1,18 @@
 from pydantic import BaseModel
-from crewai.flow import Flow, listen, start, router
+# from crewai.flow import Flow, listen, start, router
+
+from crewai.flow.flow import listen, start, router, Flow
 from crews.poem_crew.poem_crew import QueryCrew, QueryGenCrew, IDUGenCrew, GeneralQA, MainAgent
 import streamlit as st
 from dotenv import load_dotenv
 import time
-
+import os
+import agentops
 load_dotenv()
+
+
+AGENTOPS_API_KEY = os.getenv("AGENTOPS_API_KEY")
+agentops.init(auto_start_session=False, instrument_llm_calls=True)
 
 # Define the state model
 class QueryState(BaseModel):
@@ -20,6 +27,7 @@ class QueryFlow(Flow[QueryState]):
 
     @start()
     def main(self):
+        self.session = agentops.start_session()
         result = MainAgent().crew().kickoff(       
                 inputs={
                     "query": self.state.query,
@@ -97,6 +105,7 @@ class QueryFlow(Flow[QueryState]):
 
     @listen('end')
     def end_func(self):
+        self.session.end_session(end_state="Success")
         return self.state.final_response
 
 # Custom CSS for beautiful styling
