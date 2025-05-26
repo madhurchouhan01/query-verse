@@ -1,56 +1,154 @@
-# {{crew_name}} Crew
+# 🚀 QueryVerse
 
-Welcome to the {{crew_name}} Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+> ⚡ An Agentic AI-Powered Natural Language to SQL Interface  
+> 🎯 Powered by LLMs, Tracked with AgentOps, Hosted on Railway  
+> 💡 [Live Demo](https://query-verse-1.onrender.com)
+> 
+---
 
-## Installation
+## 🧠 What is QueryVerse?
 
-Ensure you have Python >=3.10 <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+**QueryVerse** is an AI-first platform that transforms how humans interact with databases. Instead of writing SQL, users simply ask questions in **natural language**, and QueryVerse:
 
-First, if you haven't already, install uv:
+1. **Parses the request** using LLMs
+2. **Translates it** into a valid **MySQL** query
+3. **Executes the query** on a live **Railway-hosted** database
+4. **Returns the results** back in **human-readable natural language**
+
+This project is **integrated with [AgentOps](https://www.agentops.ai/)** to enable intelligent observability and instrumentation of the agentic workflow.
+
+---
+
+## 🔥 Key Features
+
+- 🧠 **Agentic AI Core**: Orchestrated with LLMs and CrewAI for agent-based reasoning
+- 📊 **MySQL Compatible**: Query execution runs against live Railway-managed MySQL databases
+- 💬 **Natural Language Interface**: No more SQL headaches—just ask what you need
+- 📈 **AgentOps Integration**: Full session tracking, telemetry, and performance monitoring
+- 🛠️ **Modular and Scalable**: Built to scale across teams and use cases
+
+---
+
+## 🧪 Example Query Flow
+
+> 🧑‍💼 *"Show me all employees in sales department."*  
+> ⬇️  
+> 🧠 **[LLM Agent]** ➜ `SELECT * FROM employees WHERE dept_name = 'sales';`  
+> ⬇️  
+> 📦 **[Execution Engine]** ➜ Returns matching records  
+> ⬇️  
+> 💬 *"Here are employees in sales department..."*
+
+---
+
+## 🛠️ Tech Stack
+
+| Component         | Technology                                    |
+|-------------------|-----------------------------------------------|
+| 🤖 Agent Runtime  | [CrewAI](https://crewai.dev)                |
+| 🧠 LLM Backend    | [Groq](https://groq.com)                    |
+| 📦 Database       | MySQL on [Railway](https://railway.app)     |
+| 📊 Monitoring     | [AgentOps](https://agentops.ai)             |
+| 🖥️ Frontend       | [Streamlit](https://streamlit.io)           |
+
+---
+
+## 🧰 Installation
 
 ```bash
-pip install uv
+# Clone the repository
+git clone https://github.com/madhurchouhan01/query-verse.git
+cd query-verse
+
+# Sync CrewAI virtual environment
+uv sync
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/Scripts/activate  # On Windows
+# source .venv/bin/activate    # On macOS/Linux
+
+# Install dependencies
+uv pip install -r requirements.txt
+
+# Navigate to main file
+cd src/query_gen/
+
+# Run Streamlit UI
+streamlit run main.py
 ```
 
-Next, navigate to your project directory and install the dependencies:
+> ⚠️ **Don't forget to create MySQL database using file `backup.sql`**  
+> ⚙️ Add a **.env** file to store the API Keys
 
-(Optional) Lock the dependencies and install them by using the CLI command:
+---
+
+## 🌐 Deployment
+
+### Coming Soon 🚧
+
+We're working on deploying QueryVerse with a web UI, featuring:
+
+- ✨ **Drag-and-drop** DB uploads
+- 🎯 **Interactive** query suggestions  
+- 🔄 **Streaming** LLM responses
+
+*Stay tuned.*
+
+---
+
+## 🧠 Future Roadmap
+
+- [ ] 🔐 User authentication and access control
+- [ ] 📁 Database upload + schema preview
+- [ ] 🌍 Multi-database support (PostgreSQL, SQLite)
+- [ ] 📊 Advanced analytics and query optimization
+
+---
+
+## 🤝 Contributing
+
+**We move fast and break things—with precision.**
+
+- 🌟 **Star us** if you find this useful
+- 🍴 **Fork us** to contribute
+- 📥 **PRs welcome** - let's build together
+- 🐛 **Issues** help us improve
+
+### Development Setup
+
 ```bash
-crewai install
+# Fork the repo and clone your fork
+git clone https://github.com/YOUR_USERNAME/query-verse.git
+
+# Create a feature branch
+git checkout -b feature/amazing-feature
+
+# Make your changes and commit
+git commit -m "Add amazing feature"
+
+# Push to your fork and create a PR
+git push origin feature/amazing-feature
 ```
 
-### Customizing
+---
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
 
-- Modify `src/query_gen/config/agents.yaml` to define your agents
-- Modify `src/query_gen/config/tasks.yaml` to define your tasks
-- Modify `src/query_gen/crew.py` to add your own logic, tools and specific args
-- Modify `src/query_gen/main.py` to add custom inputs for your agents and tasks
+## 🙏 Acknowledgments
 
-## Running the Project
+- [CrewAI](https://crewai.dev) for the agentic framework
+- [AgentOps](https://agentops.ai) for observability
+- [Railway](https://railway.app) for seamless database hosting
+- [Groq](https://groq.com) for lightning-fast LLM inference
 
-To kickstart your flow and begin execution, run this from the root folder of your project:
+---
 
-```bash
-crewai run
-```
+<div align="center">
 
-This command initializes the query_gen Flow as defined in your configuration.
+**Built with ❤️, LLMs, and a healthy disrespect for old-school SQL interfaces.**
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+[![GitHub stars](https://img.shields.io/github/stars/madhurchouhan01/query-verse?style=social)](https://github.com/madhurchouhan01/query-verse/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/madhurchouhan01/query-verse?style=social)](https://github.com/madhurchouhan01/query-verse/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/madhurchouhan01/query-verse)](https://github.com/madhurchouhan01/query-verse/issues)
 
-## Understanding Your Crew
-
-The query_gen Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
-
-## Support
-
-For support, questions, or feedback regarding the {{crew_name}} Crew or crewAI.
-
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
-
-Let's create wonders together with the power and simplicity of crewAI.
+</div>
